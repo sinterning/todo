@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: todo
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/todo?serverTimezone=Asia/Shanghai
+    username: root
+    password: 1234
+    driver: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+logging:
+  level:
+    com.example.todo.mapper: DEBUG

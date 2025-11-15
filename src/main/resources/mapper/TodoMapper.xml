@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.todo.mapper.TodoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.todo.entity.TodoEntity">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="user_id" property="userId"/>
+        <result column="status" property="status"/>
+        <result column="due_date" property="dueDate"/>
+        <result column="description" property="description"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="BaseColumns">
+        id, name, user_id, status, due_date,
+        description, create_time, update_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO todo
+        (name, user_id, status, due_date, description)
+        VALUES
+        (#{name}, #{userId}, #{status}, #{dueDate}, #{description})
+    </insert>
+
+    <update id="updateById">
+        UPDATE todo
+        SET name = #{name},
+        status = #{status},
+        due_date = #{dueDate},
+        description = #{description}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM todo
+        WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="BaseColumns"/>
+        FROM todo
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByQuery" resultMap="BaseResultMap">
+        SELECT
+        <include refid="BaseColumns"/>
+        FROM todo
+        WHERE user_id = #{query.userId}
+        <if test="query.name != null and query.name != ''">
+            AND name LIKE CONCAT('%', #{query.name}, '%')
+        </if>
+        <if test="query.status != null">
+            AND status = #{query.status}
+        </if>
+        <if test="query.dueDateFrom != null">
+            AND due_date &gt;= #{query.dueDateFrom}
+        </if>
+        <if test="query.dueDateTo != null">
+            AND due_date &lt;= #{query.dueDateTo}
+        </if>
+        <if test="query.orderBy != null and query.orderBy != ''">
+            ORDER BY ${query.orderBy}
+        </if>
+    </select>
+</mapper>

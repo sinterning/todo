@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.todo.mapper.PermissionMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.todo.entity.PermissionEntity">
+        <id column="id" property="id"/>
+        <result column="subject_type" property="subjectType"/>
+        <result column="subject_id" property="subjectId"/>
+        <result column="todo_id" property="todoId"/>
+        <result column="permission_type" property="permissionType"/>
+        <result column="is_deleted" property="deleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="BaseColumns">
+        p.id, p.subject_type, p.subject_id, p.todo_id,
+        p.permission_type, p.create_time, p.update_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO permission (subject_type, subject_id, todo_id, permission_type)
+        VALUES (#{subjectType}, #{subjectId}, #{todoId}, #{permissionType})
+    </insert>
+
+    <select id="selectPermission" resultMap="BaseResultMap">
+        SELECT
+        <include refid="BaseColumns"/>
+        FROM permission p
+        WHERE subject_type = #{subjectType}
+        AND subject_id = #{subjectId}
+        AND todo_id = #{todoId}
+    </select>
+
+    <select id="selectUserPermission" resultMap="BaseResultMap">
+        SELECT
+        <include refid="BaseColumns"/>
+        FROM permission p
+        WHERE p.subject_type = 2
+        AND p.subject_id = #{userId}
+        AND p.todo_id = #{todoId}
+        UNION
+        SELECT
+        <include refid="BaseColumns"/>
+        FROM permission p
+        LEFT JOIN user_role ur on p.subject_id=ur.role_id
+        WHERE p.subject_type = 1
+        AND p.todo_id = #{todoId}
+        AND ur.user_id = #{userId}
+    </select>
+
+    <delete id="delete">
+        DELETE FROM permission
+        WHERE subject_type = #{subjectType}
+        AND subject_id = #{subjectId}
+        AND todo_id = #{todoId}
+    </delete>
+
+    <delete id="deleteByTodo">
+        DELETE FROM permission
+        WHERE todo_id = #{todoId}
+    </delete>
+
+    <delete id="deleteByRole">
+        DELETE FROM permission
+        WHERE subject_type = 1
+        AND subject_id = #{roleId}
+    </delete>
+</mapper>
