@@ -47,6 +47,7 @@ class TodoControllerTest extends BaseTest {
     @Test
     void update() {
         TodoEntity todo = createTodo();
+
         TodoUpdateReq req = new TodoUpdateReq();
         req.setId(todo.getId());
         req.setName(todo.getName());
@@ -56,7 +57,7 @@ class TodoControllerTest extends BaseTest {
 
         Assertions.assertTrue(todoController.update(req, session).isSuccess());
         req.setId(-1L);
-        Assertions.assertFalse(todoController.update(req,session).isSuccess());
+        Assertions.assertFalse(todoController.update(req, session).isSuccess());
     }
 
     @Test
@@ -64,7 +65,7 @@ class TodoControllerTest extends BaseTest {
         TodoEntity todo = createTodo();
 
         Assertions.assertTrue(todoController.delete(todo.getId(), session).isSuccess());
-        Assertions.assertFalse(todoController.delete(-1L, session).isSuccess());
+        Assertions.assertFalse(todoController.delete(todo.getId(), session).isSuccess());
     }
 
     @Test
@@ -75,7 +76,7 @@ class TodoControllerTest extends BaseTest {
         Assertions.assertTrue(resp.isSuccess());
         Assertions.assertNotNull(resp.getData());
 
-        resp = todoController.get(-1L,session);
+        resp = todoController.get(-1L, session);
         Assertions.assertFalse(resp.isSuccess());
         Assertions.assertNull(resp.getData());
     }

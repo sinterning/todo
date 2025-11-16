@@ -49,22 +49,22 @@ class PermissionControllerTest extends BaseTest {
         UserEntity u = createUser();
         u = userService.register(u.getEmail(), u.getPassword());
 
-        RoleEntity r=createRole();
+        RoleEntity r = createRole();
         roleService.createRole(r);
 
         TodoEntity t = createTodo(u);
         todoService.create(t);
         //add
         Assertions.assertTrue(permissionController.addRolePermission(
-                r.getId(), r.getId(), PermissionType.VIEW).isSuccess());
+                r.getId(), t.getId(), PermissionType.VIEW).isSuccess());
         Assertions.assertFalse(permissionController.addRolePermission(
                 r.getId(), t.getId(), PermissionType.VIEW).isSuccess());
 
         //remove
-        Assertions.assertTrue(permissionController.removeUserPermission(
-                u.getId(), t.getId()).isSuccess());
-        Assertions.assertFalse(permissionController.removeUserPermission(
-                u.getId(), t.getId()).isSuccess());
+        Assertions.assertTrue(permissionController.removeRolePermission(
+                r.getId(), t.getId()).isSuccess());
+        Assertions.assertFalse(permissionController.removeRolePermission(
+                r.getId(), t.getId()).isSuccess());
     }
 
 }

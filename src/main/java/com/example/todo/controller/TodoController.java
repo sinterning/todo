@@ -10,9 +10,9 @@ import com.example.todo.service.TodoQuery;
 import com.example.todo.service.TodoService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +20,12 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/todo")
+@RequiredArgsConstructor
 public class TodoController {
 
-    @Autowired
-    private TodoService todoService;
+    private final TodoService todoService;
 
-    @Autowired
-    private PermissionService permissionService;
+    private final PermissionService permissionService;
 
     private UserEntity currentUser(HttpSession session) {
         return (UserEntity) session.getAttribute(UserController.SESSION_USER_KEY);
@@ -105,7 +104,9 @@ public class TodoController {
         UserEntity user = currentUser(session);
         TodoQuery query = new TodoQuery();
         BeanUtils.copyProperties(req, query);
-        query.setStatus(req.getStatus().getCode());
+        if (req.getStatus() != null) {
+            query.setStatus(req.getStatus().getCode());
+        }
         query.setUserId(user.getId());
 
         List<TodoResponse> result = todoService.query(query).stream()
@@ -121,6 +122,9 @@ public class TodoController {
         TodoEntity old = todoService.get(todoId);
         if (old == null) {
             return Pair.of("todo not exist", null);
+        }
+        if (user.getId().equals(old.getUserId())) {
+            return Pair.of(null, old);
         }
         PermissionType permissionType = permissionService.getPermission(user.getId(), old.getId());
         if (permissionType == null || (edit && PermissionType.EDIT != permissionType)) {

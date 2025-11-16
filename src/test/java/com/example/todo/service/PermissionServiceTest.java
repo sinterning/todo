@@ -56,7 +56,7 @@ class PermissionServiceTest extends BaseTest {
     }
 
     @Test
-    void userAll(){
+    void userAll() {
         UserEntity u = createUser();
         userMapper.insert(u);
 

@@ -59,7 +59,7 @@ class PermissionMapperTest extends BaseTest {
     }
 
     @Test
-    void userPermission(){
+    void userPermission() {
         UserEntity u = createUser();
         userMapper.insert(u);
 
@@ -70,9 +70,9 @@ class PermissionMapperTest extends BaseTest {
         TodoEntity t = createTodo(u);
         todoMapper.insert(t);
 
-        PermissionEntity p1=createPermission(u, t);
+        PermissionEntity p1 = createPermission(u, t);
         permissionMapper.insert(p1);
-        PermissionEntity p2=createPermission(r, t);
+        PermissionEntity p2 = createPermission(r, t);
         permissionMapper.insert(p2);
 
         Assertions.assertEquals(2, permissionMapper.selectUserPermission(u.getId(), t.getId()).size());

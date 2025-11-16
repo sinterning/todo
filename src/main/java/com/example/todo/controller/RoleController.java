@@ -4,15 +4,15 @@ import com.example.todo.entity.RoleEntity;
 import com.example.todo.model.ApiResponse;
 import com.example.todo.service.RoleService;
 import jakarta.validation.constraints.Positive;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/roles")
+@RequiredArgsConstructor
 public class RoleController {
 
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
 
     @PostMapping
     public ApiResponse<Long> create(@RequestParam String roleName) {

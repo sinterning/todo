@@ -5,7 +5,7 @@ import com.example.todo.mapper.PermissionMapper;
 import com.example.todo.mapper.TodoMapper;
 import com.example.todo.service.TodoQuery;
 import com.example.todo.service.TodoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -14,26 +14,21 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class TodoServiceImpl implements TodoService {
     private final Set<String> ORDER_FIELDS = Set.of("status", "due_date", "name");
 
-    @Autowired
-    private PermissionMapper permissionMapper;
-    @Autowired
-    private TodoMapper todoMapper;
+    private final PermissionMapper permissionMapper;
+
+    private final TodoMapper todoMapper;
 
     @Override
-    @Transactional()
     public boolean create(TodoEntity todo) {
         return todoMapper.insert(todo) == 1;
     }
 
     @Override
-    @Transactional
     public boolean update(TodoEntity todo) {
-        if (todo.getId() == null) {
-            throw new IllegalArgumentException("ID 不能为空");
-        }
         return todoMapper.updateById(todo) == 1;
     }
 

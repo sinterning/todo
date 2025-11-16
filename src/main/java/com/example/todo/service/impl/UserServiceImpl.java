@@ -3,24 +3,25 @@ package com.example.todo.service.impl;
 import com.example.todo.entity.UserEntity;
 import com.example.todo.mapper.UserMapper;
 import com.example.todo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    @Autowired
-    private UserMapper userMapper;
+
+    private final UserMapper userMapper;
 
     @Override
     public UserEntity getByEmail(String email) {
         return userMapper.selectByEmail(email);
     }
 
-    @Transactional
+
+    @Override
     public UserEntity register(String email, String rawPassword) {
         if (userMapper.selectByEmail(email) != null) {
             throw new IllegalArgumentException("email already exist");
@@ -33,6 +34,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectByEmail(email);
     }
 
+    @Override
     public UserEntity login(String email, String rawPassword) {
         UserEntity user = userMapper.selectByEmail(email);
         if (user == null) {

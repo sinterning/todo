@@ -5,15 +5,15 @@ import com.example.todo.model.PermissionType;
 import com.example.todo.service.PermissionService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/permissions")
+@RequiredArgsConstructor
 public class PermissionController {
 
-    @Autowired
-    private PermissionService permissionService;
+    private final PermissionService permissionService;
 
     /* 1. 给用户加权限 */
     @PostMapping("/users/{userId}/todos/{todoId}")

@@ -26,7 +26,7 @@ class RoleServiceTest extends BaseTest {
     }
 
     @Test
-    void userRole(){
+    void userRole() {
         UserEntity u = createUser();
         userMapper.insert(u);
 

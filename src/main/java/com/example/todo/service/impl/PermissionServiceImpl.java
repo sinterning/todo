@@ -5,17 +5,18 @@ import com.example.todo.entity.SubjectType;
 import com.example.todo.mapper.PermissionMapper;
 import com.example.todo.model.PermissionType;
 import com.example.todo.service.PermissionService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PermissionServiceImpl implements PermissionService {
-    @Autowired
-    private PermissionMapper permissionMapper;
+
+    private final PermissionMapper permissionMapper;
 
     @Override
     public boolean addUserPermission(Long userId, Long todoId, PermissionType permissionType) {
