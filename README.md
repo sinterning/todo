@@ -23,7 +23,7 @@ Require user login first and will get user from session
 Add edit permission for user at the same time
 2) Update: /api/todo(PUT)  
 Require edit permission
-3) Get: /api/todo/{id}(GET)
+3) Get: /api/todo/{id}(GET)  
 Require view or edit permission
 4) Delete: /api/todo/{id}(DELETE)  
 Require edit permission
