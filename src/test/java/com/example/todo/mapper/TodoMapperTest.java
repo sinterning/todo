@@ -1,6 +1,7 @@
 package com.example.todo.mapper;
 
 import com.example.todo.BaseTest;
+import com.example.todo.entity.PermissionEntity;
 import com.example.todo.entity.TodoEntity;
 import com.example.todo.entity.UserEntity;
 import com.example.todo.service.TodoQuery;
@@ -13,6 +14,9 @@ import java.util.List;
 class TodoMapperTest extends BaseTest {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private PermissionMapper permissionMapper;
 
     @Autowired
     private TodoMapper todoMapper;
@@ -58,6 +62,9 @@ class TodoMapperTest extends BaseTest {
 
         TodoEntity t = createTodo(u);
         todoMapper.insert(t);
+
+        PermissionEntity p=createPermission(u, t);
+        permissionMapper.insert(p);
 
         TodoQuery query = new TodoQuery();
         query.setUserId(u.getId());

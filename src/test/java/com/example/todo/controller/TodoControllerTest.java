@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 
 import java.time.LocalDate;
+import java.util.List;
 
 class TodoControllerTest extends BaseTest {
 
@@ -108,6 +109,10 @@ class TodoControllerTest extends BaseTest {
         Assertions.assertEquals(1, todoController.query(req, session).getData().size());
         req.setDueDateTo(todo.getDueDate().plusDays(-1));
         Assertions.assertTrue(todoController.query(req, session).getData().isEmpty());
+
+        req.setDueDateTo(null);
+        req.setSortFields(List.of("status asc", "due_date desc"));
+        Assertions.assertEquals(1, todoController.query(req, session).getData().size());
     }
 
     private TodoEntity createTodo() {

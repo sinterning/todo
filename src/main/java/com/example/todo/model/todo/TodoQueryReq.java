@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class TodoQueryReq {
@@ -16,4 +17,7 @@ public class TodoQueryReq {
     private LocalDate dueDateFrom;
 
     private LocalDate dueDateTo;
+
+    //format: field dir,  example: ["status desc","name asc"]
+    private List<String> sortFields;
 }

@@ -1,11 +1,15 @@
 package com.example.todo.service.impl;
 
+import com.example.todo.entity.PermissionEntity;
+import com.example.todo.entity.SubjectType;
 import com.example.todo.entity.TodoEntity;
 import com.example.todo.mapper.PermissionMapper;
 import com.example.todo.mapper.TodoMapper;
+import com.example.todo.model.PermissionType;
 import com.example.todo.service.TodoQuery;
 import com.example.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -13,6 +17,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TodoServiceImpl implements TodoService {
@@ -23,8 +28,17 @@ public class TodoServiceImpl implements TodoService {
     private final TodoMapper todoMapper;
 
     @Override
+    @Transactional
     public boolean create(TodoEntity todo) {
-        return todoMapper.insert(todo) == 1;
+        log.info("create todo");
+        int count = todoMapper.insert(todo);
+        PermissionEntity permission = new PermissionEntity();
+        permission.setSubjectType(SubjectType.USER.getCode());
+        permission.setSubjectId(todo.getUserId());
+        permission.setTodoId(todo.getId());
+        permission.setPermissionType(PermissionType.EDIT.getCode());
+        permissionMapper.insert(permission);
+        return count == 1;
     }
 
     @Override

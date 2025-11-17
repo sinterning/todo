@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -90,7 +91,7 @@ public class TodoController {
     public ApiResponse<TodoResponse> get(@PathVariable Long id,
                                          HttpSession session) {
         UserEntity user = currentUser(session);
-        Pair<String, TodoEntity> result = checkPermission(user, id, true);
+        Pair<String, TodoEntity> result = checkPermission(user, id, false);
         if (result.getLeft() != null) {
             return ApiResponse.error(result.getLeft());
         } else {
@@ -107,6 +108,9 @@ public class TodoController {
         if (req.getStatus() != null) {
             query.setStatus(req.getStatus().getCode());
         }
+        if(!CollectionUtils.isEmpty(req.getSortFields())){
+            query.setOrderBy(String.join(",", req.getSortFields()));
+        }
         query.setUserId(user.getId());
 
         List<TodoResponse> result = todoService.query(query).stream()
@@ -122,9 +126,6 @@ public class TodoController {
         TodoEntity old = todoService.get(todoId);
         if (old == null) {
             return Pair.of("todo not exist", null);
-        }
-        if (user.getId().equals(old.getUserId())) {
-            return Pair.of(null, old);
         }
         PermissionType permissionType = permissionService.getPermission(user.getId(), old.getId());
         if (permissionType == null || (edit && PermissionType.EDIT != permissionType)) {

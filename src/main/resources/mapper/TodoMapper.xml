@@ -17,8 +17,8 @@
     </resultMap>
 
     <sql id="BaseColumns">
-        id, name, user_id, status, due_date,
-        description, create_time, update_time
+        t.id, t.name, t.user_id, t.status, t.due_date,
+        t.description, t.create_time, t.update_time
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -45,15 +45,30 @@
     <select id="selectById" resultMap="BaseResultMap">
         SELECT
         <include refid="BaseColumns"/>
-        FROM todo
+        FROM todo t
         WHERE id = #{id}
     </select>
 
     <select id="selectByQuery" resultMap="BaseResultMap">
         SELECT
         <include refid="BaseColumns"/>
-        FROM todo
-        WHERE user_id = #{query.userId}
+        FROM (
+        SELECT DISTINCT todo_id
+        FROM permission
+        WHERE subject_type = 2
+        AND subject_id = #{query.userId}
+
+        UNION
+
+        SELECT DISTINCT p.todo_id
+        FROM permission p
+        JOIN user_role ur
+        ON p.subject_type = 1
+        AND p.subject_id = ur.role_id
+        WHERE ur.user_id = #{query.userId}
+        ) AS u_perm
+        LEFT JOIN todo t ON t.id = u_perm.todo_id
+        WHERE 1 = 1
         <if test="query.name != null and query.name != ''">
             AND name LIKE CONCAT('%', #{query.name}, '%')
         </if>
